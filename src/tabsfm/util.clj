@@ -6,11 +6,19 @@
 
 (defn xor
   [a b]
+  "Logical Two-Input Exclusive-OR"
   (or (and a (not b))
       (and b (not a))))
 
+
+;;;;;;;;;;;;;;;
+;; PREDICATES
+;;;;;;;;;;;;;;;
+
 (defn authorized-for?
   [session section]
+  "Is the user of the current session's auth-level
+    above the auth-level in the section map?"
   (let [user (session :lastfm-user)
 	user-auth-level (session :auth-level)
 	section-auth-level (section :auth-level)]
@@ -24,6 +32,8 @@
 
 (defn in-section-for?
   [page subpage section subsection]
+  "Returns whether the :section and :subsection of a widget/map contain
+   the current page and subpage (http://tabs.fm/page/subpage)" 
    (or (nil? section)
        (and
 	(nil? page)
@@ -57,7 +67,11 @@
 	  (= subsection subpage))))))
 
 
-(defn get-select
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DATE SELECTION/CALENDAR FUNCTIONS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn get-calendar-select
   [alod selected-date] 
   (if (empty? alod)
     '()
@@ -79,16 +93,16 @@
 		
 		(filter (fn [dt]
 			  (= (year dt) (year (first alod)))) alod))]
-	  (get-select (filter (fn [dt]
+	  (get-calendar-select (filter (fn [dt]
 				(not (= (year dt) (year (first alod))))) alod)
 		      selected-date))))
 
-(defn get-calendar
-  ([now-dt] (get-calendar (minus now-dt (days (day-of-week now-dt))) '()))
+(defn get-calendar-dates
+  ([now-dt] (get-calendar-dates (minus now-dt (days (day-of-week now-dt))) '()))
   ([enddate acc]
      (let [startdate (date-time 2005 2 20)]
        (if (after? enddate startdate)
-	 (get-calendar
+	 (get-calendar-dates
 	  (minus enddate (weeks 1))
 	  (cons enddate acc))
 	 acc))))
@@ -99,4 +113,4 @@
     (concat
      [:select {:name name
 	       :id name}]
-    (get-select (get-calendar (now)) selected-date))))
+    (get-calendar-select (get-calendar-dates (now)) selected-date))))

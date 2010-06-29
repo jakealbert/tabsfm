@@ -2,7 +2,7 @@
   (:gen-class :extends javax.servlet.http.HttpServlet)
   (:use [tabsfm.response :only [success not-found]]
 	[tabsfm.templates :only [layout]]
-	[tabsfm.content :only [sections]]
+	[tabsfm.content :only [site-title sections]]
 	[tabsfm.util :only [section]]
 	[tabsfm.lastfm]
 	[hiccup :only [html]]
@@ -13,6 +13,9 @@
 
 (defn index
   [session params]
+  "Returns a SUCCESS of the page/subpage and the 
+   corresponding section layout, returns 404 if page/subpage do
+   not correspond to anything."
   (let
       [page (params "page")
        section (sections page)
@@ -32,7 +35,6 @@
 		 not-found)
        section-title  (:title fixed-section)
        subsection-title (:title subsection)
-       site-title     "Tabs.fm"
        title          (if (or (nil? section-title)
 			      (= "" section-title))
 			site-title
@@ -52,6 +54,8 @@
 
 (defn authorize
   [session params]
+  "creates a Last.fm authorized session, and creates an
+   admin session if the last.fm username is correct"
   (let [auth-response (auth_get-session params)]
     (if (or (nil? (:username auth-response))
 	    (nil? (:key auth-response)))
