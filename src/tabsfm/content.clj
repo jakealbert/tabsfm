@@ -6,6 +6,8 @@
 	[clj-time.format]
 	[hiccup :only [html]]))
 
+(def site-title "Tabs.fm")
+
 (def lipsum
      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras luctus ligula et ipsum suscipit ut pharetra metus luctus. Duis vestibulum arcu in diam sollicitudin vulputate. Cras rhoncus consectetur mauris, sit amet molestie nisi volutpat sit amet. Cras dictum, tortor ac auctor feugiat, sapien ante elementum risus, ut placerat mi mauris at quam. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque bibendum eros at lectus congue non sodales lectus auctor. Nulla aliquet tortor id felis placerat tincidunt. Cras et mauris fringilla risus vestibulum tristique a ut eros. Integer sit amet ante sit amet odio laoreet faucibus sed id nisi. Proin lacus lorem, feugiat vel euismod sit amet, facilisis sed quam. In sed nulla quam. Vivamus interdum, mauris id consectetur varius, velit augue fringilla urna, quis dignissim quam est sit amet leo. Fusce est lacus, viverra in dictum in, dapibus vitae sapien. Phasellus eleifend magna eros, ac faucibus arcu. Mauris nisi libero, rutrum laoreet egestas sed, consectetur a dolor. Ut lobortis sapien eget turpis dictum non egestas odio mattis. Duis vehicula faucibus eros id accumsan.")
 
