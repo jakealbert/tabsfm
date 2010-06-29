@@ -1,0 +1,7 @@
+$(function(){
+	$('select').selectToUISlider({labels: 0 });
+	$('div.ui-slider').before('<div class="span-16 prepend-1 last" id="calslider"></div>');
+	$('div#calslider').append($('div.ui-slider')).height('70px');
+	$('div#calslider').position('absolute');
+});
+
