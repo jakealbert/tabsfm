@@ -241,3 +241,44 @@ select {
     color: #999;
     padding-right: 0;
 }
+
+
+ol.tracklist, ul.tracklist {
+    margin: 0;
+    padding: 0;
+}
+.tracklist li.track img {
+    width: 64px;
+    height: 64px;
+    float: left;
+    margin: 4px;
+}
+
+.tracklist li.track {
+    clear: both;
+    position: relative;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    min-height: 72px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin-top: -1px;
+    position: relative;
+}
+.tracklist li.track:nth-child(odd) {
+    background: rgba(255,255,255,0.6);
+}
+.tracklist li.track:nth-child(even) {
+    background: rgba(255,255,255,0.3);
+}
+.tracklist li.track h4 {
+    margin: 0;
+    padding: 0;
+}
+
+div.action-expand {
+    width: auto;
+    background-color: red;
+    height: 100px;
+}

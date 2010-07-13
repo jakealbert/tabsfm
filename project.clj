@@ -1,8 +1,8 @@
-(defproject tabsfm "0.1.0-SNAPSHOT"
+1(defproject tabsfm "0.1.0-SNAPSHOT"
   :description "Social Tabs"
   :repositories {"incanter" "http://repo.incanter.org"}
   :dependencies [[compojure "0.4.0-RC3"]
-                 [hiccup "0.2.4"]
+                 [org.clojars.abedra/hiccup "0.2.5"]
 		 [cssgen "0.2.1"]
 		 [org.clojure/clojure-contrib "1.0-SNAPSHOT"]
 		 [org.incanter/incanter-full "1.0.0"]

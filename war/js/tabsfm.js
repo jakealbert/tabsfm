@@ -13,4 +13,7 @@ $(function(){
 							$('<span class="sensor">'+$('select :selected').text()+'</span>'));
 			      $('select').width($('.sensor').outerWidth()+28);
 			      $('.sensor').remove();
-			  });});
+			  });
+	$('.action-expand').hide();		
+
+});

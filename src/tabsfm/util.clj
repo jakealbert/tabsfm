@@ -1,6 +1,8 @@
 (ns tabsfm.util
   (:use [clj-time.core]
-	[clj-time.format]))
+	[clj-time.format]
+	[clj-time.coerce])
+  (:require [clojure.contrib.str-utils2 :as s2]))
 
 (defstruct section :title :body)
 
@@ -114,3 +116,44 @@
      [:select {:name name
 	       :id name}]
     (get-calendar-select (get-calendar-dates (now)) selected-date))))
+
+(defn lastfm-date-to-dt
+  [lastfm-date]
+  (let
+      [split-lfm-date (s2/split lastfm-date #" ")
+       year (Integer/parseInt (s2/butlast (nth split-lfm-date 2) 1))
+       day  (Integer/parseInt (first split-lfm-date))
+       hmsplit (map (fn [x] (Integer/parseInt x)) (s2/split (nth split-lfm-date 3) #":"))
+       hour (first hmsplit)
+       minute (second hmsplit)
+       monthmap {"Jan" 1
+		 "Feb" 2
+		 "Mar" 3
+		 "Apr" 4
+		 "May" 5
+		 "Jun" 6
+		 "Jul" 7
+		 "Aug" 8
+		 "Sep" 9
+		 "Oct" 10
+		 "Nov" 11
+		 "Dec" 12}
+       month (monthmap (second split-lfm-date))]
+    (date-time year month day hour minute)))
+  
+(defn dt-time-ago
+  [dt]
+  (let
+      [now-dt (now)
+       dur (interval dt now-dt)
+       dur-min (in-minutes dur)
+       dur-hour (int (/ dur-min 60))
+       dur-day (int (/ dur-hour 24))]
+    (cond (= 0 dur-min) "Now Playing"
+	  (= 1 dur-min) "1 Minute Ago"
+	  (< dur-min 60) (str dur-min " Minutes Ago")
+	  (= dur-hour 1) "1 Hour Ago"
+	  (< dur-hour 24) (str dur-hour " Hours Ago")
+	  (= dur-day 1) "1 Day Ago"
+	  :else (str dur-day " Days Ago"))))
+       

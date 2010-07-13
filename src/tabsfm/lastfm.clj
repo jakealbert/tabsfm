@@ -1,6 +1,5 @@
 (ns tabsfm.lastfm
   (:use compojure.core)
-  (:use [hiccup :only [html]])
   (:use [clojure-http.client])
   (:import (java.io Reader InputStream InputStreamReader ByteArrayInputStream IOException))
   (:import (java.security NoSuchAlgorithmException MessageDigest)
@@ -39,6 +38,27 @@
 	parsedxml))))
 	
 
+
+(defn track-tag-to-map
+  [track-tag]
+  (let
+      [track (:content track-tag)
+       now-playing (if (:attrs track-tag)
+		     (= "true" (:nowplaying (:attrs track-tag))))
+       get-content-by-tag-name (fn [tag-name]
+				 (first (for [y track
+					  :when (= (:tag y) tag-name)]
+					  (first (:content y)))))
+       tag-names (list :artist :name :date :url :streamable)
+       track-map (zipmap tag-names (map get-content-by-tag-name tag-names))
+       track-map (assoc track-map :now-playing now-playing)
+       album-mbid  (first (for [y track
+				:when (= (:tag y) :album)]
+			   (:mbid (:attrs y))))
+       track-map (assoc track-map :album-mbid album-mbid)]
+    track-map))
+		     
+
 (defn user_get-weekly-track-chart
   [username]
    (lastfm-getmethod
@@ -50,18 +70,70 @@
   (for [x (xml-seq (user_get-weekly-track-chart username))
 	:when (and (:rank (:attrs x))
 		   (< (Integer/parseInt (:rank (:attrs x))) 11))]
-    (let
-	[track  (:content x)
-	 artist (first (for [y track
-			     :when (= (:tag y) :artist)]
-			 (first (:content y))))
-         name   (first (for [y track
-			     :when (= (:tag y) :name)]
-			 (first (:content y))))
-         url    (first (for [y track
-			     :when (= (:tag y) :url)]
-			 (first (:content y))))]
-      {:artist artist :name name :url url})))
+    (track-tag-to-map x)))
+
+(defn user_get-recent-tracks
+  ([username limit page]
+     (lastfm-getmethod
+      {"limit" limit
+       "method" "user.getrecenttracks"
+       "page" page
+       "user" username}))
+  ([username limit]
+     (lastfm-getmethod
+      {"limit" limit
+       "method" "user.getrecenttracks"
+       "user" username}))
+  ([username]
+     (lastfm-getmethod
+      {"method" "user.getrecenttracks"
+       "user" username})))
+
+
+(defn get-recent-tracks
+  [username]
+  (for [track-tag (:content
+		   (first 
+		    (:content 
+		     (first 
+		      (xml-seq (user_get-recent-tracks username 25))))))]
+    (track-tag-to-map track-tag)))
+       	 
+
+(defn album_get-info-by-mbid
+  ([mbid]
+     (lastfm-getmethod
+      {"method" "album.getinfo"
+       "mbid" mbid}))
+  ([mbid username]
+     (lastfm-getmethod
+      {"method" "album.getinfo"
+       "mbid" mbid
+       "username" username})))
+
+(defn album_get-info-by-artist
+  ([artist]
+     (lastfm-getmethod
+      {"method" "album.getinfo"
+       "artist" artist}))
+  ([artist username]
+     (lastfm-getmethod
+      {"method" "album.getinfo"
+       "artist" artist
+       "username" username})))
+
+(defn get-album-image-url
+  ([album-info] (get-album-image-url album-info "medium"))
+  ([album-info size] (first
+		(for [tag (:content
+			   (first
+			    (:content
+			     (first
+			      (xml-seq album-info)))))
+		      :when (and (= (:tag tag) :image)
+				 (= (:size (:attrs tag)) size))]
+		  (first (:content tag))))))
+       
     
 (defn pad [n s]
   (let [padding (- n (count s))]

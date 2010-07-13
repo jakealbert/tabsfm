@@ -1,9 +1,13 @@
 (ns tabsfm.templates
   (:use [tabsfm.lastfm]
 	[tabsfm.util]
+	[clj-time.core]
+	[clj-time.format]
+	[clj-time.coerce]
 	[hiccup :only [html]]
 	[hiccup.page-helpers :only [include-css doctype]]
-	[hiccup.form-helpers]))
+	[hiccup.form-helpers])
+  (:require [clojure.contrib.str-utils2 :as s2]))
 
 
 ;;;;;;;;;;;;;;;;;;;
@@ -218,6 +222,63 @@
        ((:body subsection) session params)))]])
 
 
+
+
+;;;;;;;;;;;;;;;;;;;
+;; TRACKLISTS
+;;;;;;;;;;;;;;;;;;;
+
+
+(defn track-to-list-item
+  [track]
+  (let [actions #{"Songbooks"
+		  "View on Last.fm" "Share"}
+	track-url   (:url track)
+	track-url  (s2/split track-url #"/_/")
+	name-url   (second track-url)
+	artist-url  (second (s2/split (first track-url) #"/music/"))
+	album-info  (if (or (nil? (:album-mbid track))
+			    (= "" (:album-mbid track)))
+		      (album_get-info-by-artist (:artist track))
+		      (album_get-info-by-mbid (:album-mbid track)))
+	album-art-url (get-album-image-url album-info)
+	album-art-url (if (or (nil? album-art-url)
+			      (= "" album-art-url))
+			"/images/no-art.png"
+			album-art-url)
+	album-art  [:img {:src album-art-url :alt (str (:artist track) " - " (:name track)) :width "64px" :height "64px"}]
+	track-body [:div
+		    [:div.album-art
+		     [:a {:href (str "/artist/" artist-url "/" name-url)} album-art]]
+		    [:h4
+		     [:a {:href (str "/artist/" artist-url)}
+		      (:artist track)]
+		     " - "
+		     [:a {:href (str "/artist/" artist-url "/" name-url)}
+		      (:name track)]]
+		    [:div.date (dt-time-ago (lastfm-date-to-dt (:date track)))]
+		    [:div.track-actions
+		     [:a.current  {:href "#"} (first actions)]
+		     (for [action (rest actions)]
+		       (html " | " [:a {:href "#"} action]))]
+		    [:div.action-expand]]]
+    (if (true? (:now-playing track))
+      [:li.track.now-playing track-body]
+      [:li.track track-body])))
+
+(defn tracks-to-ol
+  [tracks]
+  [:ol.tracklist
+   (for [track tracks]
+     (track-to-list-item track))])
+
+(defn tracks-to-ul
+  [tracks]
+  [:ul.tracklist
+   (for [track tracks]
+     (track-to-list-item track))])
+
+
 ;;;;;;;;;;;;;;;;;;;
 ;; LAYOUT
 ;;;;;;;;;;;;;;;;;;;
@@ -239,8 +300,9 @@
 				(:key user))]
 	     (if logged-in
 	       (html
-		(str "Welcome, " (:username user) ".")
-		" "
+		"Welcome, " 
+		[:a {:href (str "/users/" (:username user))} (:username user)]
+		". "
 		[:a {:href "/logout"} "Logout"])
 	       [:a {:href lastfm-auth-url} "Login to Last.fm"]))]
        [:div#navbar.span-24.last

@@ -43,11 +43,19 @@
       (struct-map section
 	:title "Recently Scrobbled Tabs"
 	:body  (fn [s p]
-		 [:ol
-		  [:li "item one"]
-		  [:li "item two"]
-		  [:li "item three"]])
-	:section "tabs")
+		 [:div
+		  (let [lastfm-user (s :lastfm-user)
+			username (if lastfm-user
+				   (:username lastfm-user)
+				   nil)
+			op (if username
+			     (tracks-to-ol (get-recent-tracks username))
+			     [:span "Log in for this sweetness."])]
+		    op)
+		  [:a.more {:href "#"} "View More"]])
+		   
+	:section "tabs"
+	:auth-level :user)
       (struct-map section
 	:title "Top Artists"
 	:body (fn [s p] [:div])
