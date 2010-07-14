@@ -1,12 +1,15 @@
-compile with
+Compiling:
+
 lein clean
 lein deps
 lein compile
 
-interactive local development with
-lein swank &
 
+Interactive local development:
+
+lein swank &
 emacs
+
 M-x swank-clojure-project
 M-x slime-connect
 
@@ -17,7 +20,12 @@ C-x C-f src/local_dev.clj
 C-c C-k
 
 Now, in the REPL,
+Type "," then "i", then "tabsfm" to enter the namespace. Then,
 (start-server (var app))
 
 And open
 http://localhost:8080 in your browser.
+
+
+Google AppEngine Deploy
+appengine/bin/appcfg.sh update war

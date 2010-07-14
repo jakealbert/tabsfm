@@ -31,7 +31,8 @@
    (struct section "User Agreement" "user-agreement")
    (struct section "Privacy Policy" "privacy-policy")
    (struct section "Contact Us" "contact")
-   (struct section "Android/iPhone" "mobile")))
+   (struct section "Android/iPhone" "mobile")
+   (struct section "GitHub" "http://github.com/brockrockman/tabsfm")))
 
 
 ;;;;;;;;;;;;;;;;;;;
@@ -258,9 +259,9 @@
 		      (:name track)]]
 		    [:div.date (dt-time-ago (lastfm-date-to-dt (:date track)))]
 		    [:div.track-actions
-		     [:a.current  {:href "#"} (first actions)]
+		     [:a.current  {:href "/"} (first actions)]
 		     (for [action (rest actions)]
-		       (html " | " [:a {:href "#"} action]))]
+		       (html " | " [:a {:href "/"} action]))]
 		    [:div.action-expand]]]
     (if (true? (:now-playing track))
       [:li.track.now-playing track-body]
@@ -324,10 +325,14 @@
 	  [:a {:href (str "/" (:body first-link))} (:title first-link)])
 	(for [footer-item (rest footer-items)]
 	  (html
-	   " | " [:a {:href (str "/" (:body footer-item))}
+	   " | " [:a {:href (if (s2/contains? (:body footer-item) "://")
+			      (:body footer-item)
+			      (str "/" (:body footer-item)))}
 		  (:title footer-item)]))]
        [:div#copyright.span-24.last
 	"&copy; Tabs.fm 2010. All rights reserved.  A"
 	[:a {:href "http://youbroughther.com"} "YBH"]
 	" Production."]]]]]))
        
+
+
