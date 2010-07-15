@@ -1,0 +1,12 @@
+(ns tabsfm.tabsucker
+  (:use compojure.core)
+  (:use [hiccup :only [html]])
+  (:import (java.io Reader InputStream InputStreamReader ByteArrayInputStream IOException))
+  (:import (java.security NoSuchAlgorithmException MessageDigest)
+	   (java.math BigInteger))
+  (:require [clojure.xml :as xml])
+  (:require [clojure.zip :as zip])
+  (:require [clojure.contrib.zip-filter.xml :as zf])
+  (:require [clojure-http.resourcefully :as res]))
+
+  

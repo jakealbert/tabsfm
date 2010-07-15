@@ -1,0 +1,2 @@
+(ns tabsfm.css
+  (:use [cssgen.use]))

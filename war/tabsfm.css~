@@ -1,0 +1,138 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+		background-color: rgb(200,200,200);
+		background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.0, rgb(255, 255, 255)),
+	color-stop(1.0, rgb(175,175,175)));
+	background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(255,255,255) 0%,
+    rgb(175,175,175) 100%);
+	font-family: 'Nobile', arial, serif;
+
+}
+
+#preheader {
+	background-color: white;
+	width: 950px;
+		border-left: 1px solid #999;
+		border-right: 1px solid #999;
+	height: 6px;
+}
+.container {
+	margin: 0 auto;
+	width: 950px;
+}
+
+#header, #footer {
+	background-color: red;
+	background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.03, rgb(115,25,25)),
+    color-stop(0.47, rgb(194,60,60)),
+    color-stop(1, rgb(163,56,56)));
+	background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(115,25,25) 3%,
+    rgb(194,60,60) 47%,
+    rgb(163,56,56) 100%);
+	padding-top: 12px;
+	color: white;
+	width: 100%;
+	clear: both;
+}
+#header #logo a { text-decoration:none; }
+#header	h1 { font-family: 'Cardo', arial, serif; }
+#header a { color: white; }
+
+#navbar, #navbar ul, #navbar ul li {
+	margin: 0;
+	padding: 0;
+}
+#navbar ul li { 
+	list-style-type: none;
+	display: inline;
+	margin-right: 3px;
+	font-size: 14px;
+	height: 24px;
+	border: 1px solid #222;
+	border-bottom: none;
+	padding: 3px 0px;
+	position: relative;
+	left: -1px;
+	top: -3px;
+}
+#navbar ul li a {
+	padding: 3px 12px;
+	text-decoration: none;
+	background-color: rgba(0, 0, 0, 0.3);
+}
+#navbar ul li a:hover {
+	background-color: rgba(40, 40, 40, 0.3);
+}
+#navbar
+ ul li.current {
+	 	border: 1px solid #999;
+		border-bottom: 1px solid rgb(163,56,56);
+}
+#navbar ul li.current a {
+	background-color: white;
+	padding-bottom: 4px;
+	color: black;
+}
+#navbar ul li.current a:hover {
+	color: red;
+}
+
+#copyright {
+	text-align: center;
+}
+#copyright a {
+	color: white;
+	text-decoration: none;
+	font-weight: bold;
+}
+#copyright a:hover {
+	text-decoration: underline;
+}
+#footer {
+	margin: 0 auto;
+	padding: 12px 0;
+}
+#footernav {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+#footernav a{
+	text-decoration: none;
+	color: white;
+}
+#footernav a:hover {
+	text-decoration: underline;
+}
+
+#content {
+	border: 1px solid #999;
+	background-color: white;
+	margin-bottom: 12px;
+	padding-top: 12px;
+}
+
+.widget {
+	background-color: #bbb;
+	border: 1px solid #999;
+		margin: 6px 0;
+	margin-bottom: 12px;	
+}
+
+.widget h3 {
+	margin: 12px;
+}

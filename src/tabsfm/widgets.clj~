@@ -1,0 +1,7 @@
+(ns tabsfm.widgets
+  (:use [tabsfm.lastfm]
+	[tabsfm.templates]
+	[hiccup :only [html]]))
+
+
+		     

@@ -1,0 +1,7 @@
+(ns tabsfm.response)
+
+(defn success 
+  ([body]
+     {:status 200 :headers {"Content-Type" "text/html"} :body body})
+  ([body session]
+     {:status 200 :headers {"Content-Type" "text/html"} :body body :session session}))

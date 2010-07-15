@@ -1,0 +1,236 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+		background-color: rgb(200,200,200);
+		background-image: -webkit-gradient(
+		    linear,
+		    left bottom,
+		    left top,
+		    color-stop(0.80, rgb(240, 240, 240)),
+		    color-stop(1.0, rgb(120,120,120)));
+		background-image: -moz-linear-gradient(
+		    center bottom,
+		    rgb(240,240,240) 80%,
+		    rgb(120,120,120) 100%);
+		font-family: 'Nobile', arial, serif;
+		
+}
+
+#preheader {
+	background-color: white;
+	width: 950px;
+		border-left: 1px solid #999;
+		border-right: 1px solid #999;
+	height: 8px;
+}
+.container {
+	margin: 0 auto;
+	width: 950px;
+}
+
+#header, #footer {
+	background-color: red;
+	background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.03, rgb(115,25,25)),
+    color-stop(0.47, rgb(194,60,60)),
+    color-stop(1, rgb(163,56,56)));
+	background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(115,25,25) 3%,
+    rgb(194,60,60) 47%,
+    rgb(163,56,56) 100%);
+	padding-top: 12px;
+	color: white;
+	width: 100%;
+	clear: both;
+	border-top: 1px solid #222;
+}
+#logo { background: transparent; }
+#header #logo a { text-decoration:none; }
+#header	h1 { font-family: 'Cardo', arial, serif;
+	   font-size: 3em;}
+#header a { color: white; }
+
+#navbar, #navbar ul, #navbar ul li {
+	margin: 0;
+	padding: 0;
+}
+#navbar ul li { 
+	list-style-type: none;
+	display: inline;
+	margin-right: 3px;
+	font-size: 16px;
+	height: 24px;
+	border: 1px solid #222;
+	border-bottom: none;
+	padding: 3px 0px;
+	position: relative;
+	left: -1px;
+	top: -3px;
+}
+#navbar ul li a {
+	padding: 3px 12px;
+	text-decoration: none;
+	background-color: rgba(0, 0, 0, 0.3);
+}
+#navbar ul li a:hover {
+	background-color: rgba(40, 40, 40, 0.3);
+}
+#navbar ul li.current {
+	 	border: 1px solid #999;
+		border-bottom: 1px solid rgb(163,56,56);
+}
+#navbar ul li.current a {
+	background-color: white;
+	padding-bottom: 4px;
+	color: black;
+}
+#navbar ul li.current a:hover {
+	color: rgb(194,60,60);
+}
+
+#copyright {
+	text-align: center;
+}
+#copyright a {
+	color: white;
+	text-decoration: none;
+	font-weight: bold;
+}
+#copyright a:hover {
+	text-decoration: underline;
+}
+#footer {
+	margin: 0 auto;
+	padding: 1em 0;
+}
+#footernav {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+#footernav a{
+	text-decoration: none;
+	color: white;
+}
+#footernav a:hover {
+	text-decoration: underline;
+}
+
+#content {
+	border: 1px solid #999;
+	border-bottom: none;
+	background-color: white;
+
+}
+
+.widget {
+	background-color: #bbb;
+	border: 1px solid #999;
+}
+
+
+#userbox {
+    text-align: right;
+    background: transparent;
+}
+#userbox a {
+    text-decoration: none;
+}
+
+#userbox a:hover {
+    text-decoration: underline;
+}
+
+ul.tabbed-section {
+    padding: 0;
+}
+ul.tabbed-section li {
+    list-style-type: none;
+    margin: -1px;
+    border: 1px solid #222;
+    background-color: #eee;
+    margin-right: -29px;
+}
+ul.tabbed-section li.current {
+    background-color: #222;
+}
+ul.tabbed-section li a {
+    text-decoration: none;
+    color: #222;
+    padding: 0.5em;
+    display: block;
+}
+ul.tabbed-section li a:hover {
+    background-color: #ccc;
+    color: black;
+}
+ul.tabbed-section li.current a {
+    color: white;
+}
+ul.tabbed-section li.current a:hover {
+    background-color: inherit;
+    color: #eee;
+}
+
+
+
+div.tabbed-section {
+    min-height: 26em;
+    border: 1px solid #222;
+    margin-top: -1px;
+    z-index: 0;
+    background-color: #222;
+    color: white;
+}
+
+div.subsection {
+
+    background-color: #f2f2f2;
+    background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.10, #f2f2f2),
+    color-stop(1.0, rgb(220,220,220)));
+    background-image: -moz-linear-gradient(
+    center bottom,
+    #f2f2f2 10%,
+    rgb(220,220,220) 100%);
+    color: black;
+    border-top: 2px solid #ccc;
+    border-bottom: 2px solid #444;
+}
+
+div.subsection h3 {
+    color: black;
+    
+}
+
+div.widgetsubsection.colborder {
+    border-color: #555;
+}
+
+div.subsection a {
+    color: #2266cc;
+}
+
+div.tabbed-section hr {
+    color: #555;
+    background-color: #555;
+}
+div.tabbed-section h2 {
+    color: white;
+    margin-bottom: 0;
+}
+div.subsection-description {
+    color: #999;
+    margin-bottom: 1.5em;
+    margin-top: 0;
+}
+
+.ui-slider {clear:both;}
