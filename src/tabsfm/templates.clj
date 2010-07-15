@@ -110,7 +110,7 @@
 (defn widget-section
   [session params widgets]
   (html
-   [:div.tabsection.prepend-1.span-13.append-1.colborder
+   [:div.tabsection.prepend-1.span-14.append-1.colborder
     (map (fn [widget] (html [:div.box [:h3 (:title widget)] ((:body widget) session params)]))
 	 (filter (fn [widget] (and (not (= (:position widget) :right))
 				   (in-section-for? (params "page")
@@ -119,7 +119,7 @@
 						    (:subsection widget))
 				   (authorized-for? session widget)))
 		 widgets))]
-   [:div.tabsection.span-8.last
+   [:div.tabsection.span-7.last
     (map (fn [widget] (html [:div.box [:h3 (:title widget)] ((:body widget) session params)]))
 	 (filter (fn [widget] (and (= (:position widget) :right)
 				   (in-section-for? (params "page")
@@ -229,20 +229,76 @@
 ;; TRACKLISTS
 ;;;;;;;;;;;;;;;;;;;
 
-
 (defn track-to-list-item
-  [track]
-  (let [actions #{"Songbooks"
-		  "View on Last.fm" "Share"}
+  [s p track]
+  (let [actions (list {:title "Songbooks"
+		       :link "songbooks"
+		       :content (fn [s p] (let [links (list
+						       {:title "View in Songbook"
+							:url "view"
+							:link "view"}
+						       {:title "Add to Songbook"
+							:url "add"
+							:link "add"}
+						       {:title "Remove from Songbook"
+							:url "remove"
+							:link "remove"})]
+					    (for [link links]
+					      [:li.icon [:a {:href (:url link)
+							     :class (:link link)}
+							 (:title link)]])))}
+		      {:title "Versions"
+		       :link "versions"
+		       :content (fn [s p] (let [links (list
+						       {:title "Guitar Tabs"
+							:url "guitar"
+							:link "guitar"}
+						       {:title "Bass Tabs"
+							:url "bass"
+							:link "bass"}
+						       {:title "Chords"
+							:url "chords"
+							:link "chords"}
+						       {:title "All"
+							:url "all"
+							:link "all"})]
+					    (for [link links]
+					      [:li.icon [:a {:href (:url link)
+							     :class (:link link)}
+							 (:title link)]])))}
+		      {:title "Share"
+		       :link "share"
+		       :content (fn [s p] (let [links (list 
+						       {:title "Jam Feed"
+							:url "http://tabs.fm"
+							:link "jamfeed"}
+						       {:title "Facebook"
+							:url "http://facebook.com"
+							:link "facebook"}
+						       {:title "Twitter"
+							:url "http://twitter.com"
+							:link "twitter"}
+						       {:title "Last.fm"
+							:url "http://last.fm"
+							:link "lastfm"}
+						       )]
+					    [:ul
+					     (for [link links]
+					       [:li.icon [:a {:href (:url link)
+							 :class (:link link)}
+							  (:title link)]])]))})
+					       
 	track-url   (:url track)
 	track-url  (s2/split track-url #"/_/")
 	name-url   (second track-url)
 	artist-url  (second (s2/split (first track-url) #"/music/"))
 	album-info  (if (or (nil? (:album-mbid track))
 			    (= "" (:album-mbid track)))
-		      (album_get-info-by-artist (:artist track))
+		      nil
 		      (album_get-info-by-mbid (:album-mbid track)))
-	album-art-url (get-album-image-url album-info)
+	album-art-url (if (nil? album-info)
+			nil
+			(get-album-image-url album-info))
 	album-art-url (if (or (nil? album-art-url)
 			      (= "" album-art-url))
 			"/images/no-art.png"
@@ -257,27 +313,31 @@
 		     " - "
 		     [:a {:href (str "/artist/" artist-url "/" name-url)}
 		      (:name track)]]
-		    [:div.date (dt-time-ago (lastfm-date-to-dt (:date track)))]
+		    [:div.date (if (nil? (:date track))
+				 "Now Playing"
+				 (dt-time-ago (lastfm-date-to-dt (:date track))))]
 		    [:div.track-actions
-		     [:a.current  {:href "/"} (first actions)]
+		     [:a {:href (str "#" (:link (first actions))) :link (:link (first actions))} (:title (first actions))]
 		     (for [action (rest actions)]
-		       (html " | " [:a {:href "/"} action]))]
-		    [:div.action-expand]]]
+		       (html [:a {:href (str "#" (:link action)) :link (:link action)} (:title action)]))]
+		    [:div.action-expand
+		     (for [action actions]
+		       [:div {:class (:link action)} ((:content action) s p)])]]]
     (if (true? (:now-playing track))
       [:li.track.now-playing track-body]
       [:li.track track-body])))
 
 (defn tracks-to-ol
-  [tracks]
+  [s p tracks]
   [:ol.tracklist
    (for [track tracks]
-     (track-to-list-item track))])
+     (track-to-list-item s p track))])
 
 (defn tracks-to-ul
-  [tracks]
+  [s p tracks]
   [:ul.tracklist
    (for [track tracks]
-     (track-to-list-item track))])
+     (track-to-list-item s p track))])
 
 
 ;;;;;;;;;;;;;;;;;;;

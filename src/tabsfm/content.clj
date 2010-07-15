@@ -45,15 +45,16 @@
 	:body  (fn [s p]
 		 [:div
 		  (let [lastfm-user (s :lastfm-user)
-			username (if lastfm-user
-				   (:username lastfm-user)
-				   nil)
-			op (if username
-			     (tracks-to-ol (get-recent-tracks username))
-			     [:span "Log in for this sweetness."])]
-		    op)
-		  [:a.more {:href "#"} "View More"]])
-		   
+			username (if (or (nil? lastfm-user)
+					 (nil? (lastfm-user :username))
+					 (nil? (lastfm-user :key)))
+				   nil
+				   (:username lastfm-user))
+			op  (if username
+			      (tracks-to-ol s p (get-recent-tracks username))
+			      [:span "Log in and Register for this sweetness."])
+			  ]
+		    op)])	   
 	:section "tabs"
 	:auth-level :user)
       (struct-map section
@@ -191,7 +192,7 @@
 						(let [dt (now)
 						      pastsun (minus dt (days (day-of-week dt)))
 						      pastsun2 (minus pastsun (weeks 1))
-						      fmt (formatter "EEEE dd mmmm YYYY")
+						      fmt (formatter "EEEE dd MMMM YYYY")
 						      datestr (str "For the week of "
 								   (unparse fmt pastsun2)
 								   " to "

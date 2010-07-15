@@ -247,11 +247,15 @@ ol.tracklist, ul.tracklist {
     margin: 0;
     padding: 0;
 }
+.tracklist div.album-art {
+    float: left;
+    width: 64px;
+    height: 64px;
+    padding: 4px;
+}
 .tracklist li.track img {
     width: 64px;
     height: 64px;
-    float: left;
-    margin: 4px;
 }
 
 .tracklist li.track {
@@ -275,10 +279,114 @@ ol.tracklist, ul.tracklist {
 .tracklist li.track h4 {
     margin: 0;
     padding: 0;
+    font-size: 1.4em;
+}
+
+.tracklist div.date {
+    margin: 0.2em 0;
+}
+
+
+div.track-actions a {
+    display: inline-block;
+    background-color: #b23243;
+    margin-right: 0.5em;
+    margin-bottom: 7px;
+    padding: 5px 10px 6px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    position: relative;
+    cursor: pointer;
 }
 
 div.action-expand {
+    display: none;
     width: auto;
-    background-color: red;
-    height: 100px;
+    background-color: #444;
+    height: 86px;
+    clear: both;
+    margin-top: 5px;
+    position: relative;
+    color: white;
+}
+
+div.action-expand.ae-expanded {
+    display: block;
+}
+
+
+div.action-expand-triangle {
+    border-color: transparent transparent #444 transparent;
+    border-style: solid;
+    border-width: 10px;
+    height: 0;
+    width: 0;
+    position: absolute;
+    top: -20px;
+    left: 0;
+}
+div.action-expand ul, div.action-expand ol {
+    margin: 0 auto;
+    padding: 0;
+}
+div.action-expand li {
+    list-style-type: none;
+}
+li.icon {
+    list-style-type: none;
+    display: inline-block;
+    margin: 2px;
+}
+li.icon a {
+    display: block;
+    color: white;
+    height: 72px;
+    min-width: 60px;
+    padding-top: 60px;
+    text-align: center;
+    margin: 5px 10px;
+    font-size: 0.8em;
+    text-decoration: none;
+}
+li.icon a:hover {
+    text-decoration: underline;
+}
+li.icon a.reddit {
+    background: url('/images/icons/reddit.png') no-repeat 0 0;
+}
+li.icon a.digg {
+    background: url('/images/icons/digg.png') no-repeat 0 0;
+}
+li.icon a.facebook {
+    background: url('/images/icons/facebook.png') no-repeat 0 0;
+}
+li.icon a.lastfm {
+    background: url('/images/icons/lastfm.png') no-repeat 0 0;
+}
+li.icon a.twitter {
+    background: url('/images/icons/twitter.png') no-repeat 0 0;
+}
+li.icon a.youtube {
+    background: url('/images/icons/youtube.png') no-repeat 0 0;
+}
+li.icon a.guitar {
+    background: url('/images/icons/guitar.png') no-repeat 0 0;
+}
+li.icon a.bass {
+    background: url('/images/icons/bass.png') no-repeat 0 0;
+}
+li.icon a.chords {
+    background: url('/images/icons/chords.png') no-repeat 0 0;
+}
+
+li.icon a.all {
+    background: url('/images/icons/all.png') no-repeat 0 0;
 }

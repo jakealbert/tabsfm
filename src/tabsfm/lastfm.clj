@@ -99,7 +99,7 @@
 		   (first 
 		    (:content 
 		     (first 
-		      (xml-seq (user_get-recent-tracks username 25))))))]
+		      (xml-seq (user_get-recent-tracks username 5))))))]
     (track-tag-to-map track-tag)))
        	 
 
