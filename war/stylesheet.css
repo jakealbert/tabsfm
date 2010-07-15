@@ -36,12 +36,12 @@ body {
     left bottom,
     left top,
     color-stop(0.03, rgb(115,25,25)),
-    color-stop(0.47, rgb(194,60,60)),
+    color-stop(0.47, #b23243),
     color-stop(1, rgb(163,56,56)));
 	background-image: -moz-linear-gradient(
     center bottom,
     rgb(115,25,25) 3%,
-    rgb(194,60,60) 47%,
+    #b23243 47%,
     rgb(163,56,56) 100%);
 	padding-top: 12px;
 	color: white;
@@ -352,7 +352,7 @@ li.icon a {
     min-width: 60px;
     padding-top: 60px;
     text-align: center;
-    margin: 5px 10px;
+    margin: 5px 7px;
     font-size: 0.8em;
     text-decoration: none;
 }
@@ -389,4 +389,9 @@ li.icon a.chords {
 
 li.icon a.all {
     background: url('/images/icons/all.png') no-repeat 0 0;
+}
+
+div.viewmore {
+    float: right;
+    clear: both;
 }

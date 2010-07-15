@@ -43,18 +43,18 @@
       (struct-map section
 	:title "Recently Scrobbled Tabs"
 	:body  (fn [s p]
-		 [:div
-		  (let [lastfm-user (s :lastfm-user)
-			username (if (or (nil? lastfm-user)
-					 (nil? (lastfm-user :username))
-					 (nil? (lastfm-user :key)))
-				   nil
-				   (:username lastfm-user))
-			op  (if username
-			      (tracks-to-ol s p (get-recent-tracks username))
-			      [:span "Log in and Register for this sweetness."])
-			  ]
-		    op)])	   
+		 (let [lastfm-user (s :lastfm-user)
+		       username (if (or (nil? lastfm-user)
+					(nil? (lastfm-user :username))
+					(nil? (lastfm-user :key)))
+				  nil
+				  (:username lastfm-user))
+		       op  (if username
+			     (list (tracks-to-ol s p (get-recent-tracks username))
+				   [:div.viewmore [:a {:href (str "/users/" username "/recent")} "View More"]])
+			     [:span "Log in and Register for this sweetness."])
+		       ]
+		   op))	   
 	:section "tabs"
 	:auth-level :user)
       (struct-map section
@@ -252,6 +252,49 @@
 			(centered-section
 			 "Your Last.fm session has been discarded"
 			 [:p "&#8220;later dude.&#8221;"])))
+   "users"     (struct-map section
+		       :title "Users"
+		       :body (fn [s p]
+			       (tabbed-section s p 
+					       (list 
+						(struct section
+							"Profile"
+							"profile")
+						(struct section
+							"Library"
+							"library")
+						(struct section
+							"Charts"
+							"charts")
+						(struct section
+							"Friends"
+							"friends")
+						(struct section
+							"Tracks"
+							"tracks"))
+					       ((var sections) "users")))
+		       :subsections 
+		       {"profile" (struct-map section
+				    :title "Profile"
+				    :body (fn [s p]
+					    "user profile"))
+			"library" (struct-map section
+				    :title "Library"
+				    :body (fn [s p]
+					    "user library"))
+			"charts" (struct-map section
+				   :title "Charts"
+				   :body (fn [s p]
+					   "user charts"))
+			"friends" (struct-map section
+				    :title "Friends"
+				    :body (fn [s p]
+					    "user friends"))
+			"tracks" (struct-map section
+				   :title "Tracks"
+				   :body (fn [s p]
+					   "user tracks"))})
+					       ;; check if user is in DS
    "user-agreement"      (struct section
 				 "User Agreement"
 				 (fn [s p]
