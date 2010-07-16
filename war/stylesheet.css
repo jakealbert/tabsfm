@@ -146,6 +146,11 @@ body {
     text-decoration: underline;
 }
 
+#userbox a.userlink {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
 ul.tabbed-section {
     padding: 0;
 }
@@ -316,6 +321,17 @@ div.action-expand {
     margin-top: 5px;
     position: relative;
     color: white;
+    	background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.0, #222),
+    color-stop(1, #444));
+	background-image: -moz-linear-gradient(
+    center bottom,
+    #222 0%,
+    #444 100%);
+
 }
 
 div.action-expand.ae-expanded {
@@ -392,6 +408,33 @@ li.icon a.all {
 }
 
 div.viewmore {
-    float: right;
-    clear: both;
+    text-align: right;
+    width: auto;
+    padding-top: 1.2em;
+}
+div.viewmore a {
+    display: inline-block;
+    margin: 0;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    position: relative;
+    cursor: pointer;
+
+}
+div.viewmore a.next {
+    padding: 7px 37px 7px 10px;
+    background: url('/images/icons/forward.png') no-repeat top right #111;
+}
+div.viewmore a.prev {
+    padding: 7px 10px 7px 37px;
+    background: url('/images/icons/back.png') no-repeat top left  #111;
+    float: left;
+}
+div.viewmore a:hover {
+    text-decoration: underline;
 }

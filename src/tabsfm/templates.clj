@@ -187,7 +187,9 @@
        (let [page     (params "page")
 	     page-url (if (= page "tabs")
 			"/"
-			(str "/" page "/"))
+			(if (params "userpage")
+			  (str "/" page "/" (params "userpage") "/")
+			  (str "/" page "/")))
 	     subpage   (params "subpage")
 	     subpage   (if (nil? subpage)
 			 (:body (first tabs))
@@ -259,7 +261,7 @@
 						       {:title "Chords"
 							:url "chords"
 							:link "chords"}
-						       {:title "All"
+						       '{:title "All"
 							:url "all"
 							:link "all"})]
 					    (for [link links]
@@ -288,10 +290,6 @@
 							 :class (:link link)}
 							  (:title link)]])]))})
 					       
-	track-url   (:url track)
-	track-url  (s2/split track-url #"/_/")
-	name-url   (second track-url)
-	artist-url  (second (s2/split (first track-url) #"/music/"))
 	album-info  (if (or (nil? (:album-mbid track))
 			    (= "" (:album-mbid track)))
 		      nil
@@ -306,12 +304,12 @@
 	album-art  [:img {:src album-art-url :alt (str (:artist track) " - " (:name track)) :width "64px" :height "64px"}]
 	track-body [:div
 		    [:div.album-art
-		     [:a {:href (str "/artist/" artist-url "/" name-url)} album-art]]
+		     [:a {:href (str "/artist/" (:url-artist track) "/" (:url-name track))} album-art]]
 		    [:h4
-		     [:a {:href (str "/artist/" artist-url)}
+		     [:a {:href (str "/artist/" (:url-artist track))}
 		      (:artist track)]
 		     " - "
-		     [:a {:href (str "/artist/" artist-url "/" name-url)}
+		     [:a {:href (str "/artist/" (:url-artist track) "/" (:url-name track))}
 		      (:name track)]]
 		    [:div.date (if (nil? (:date track))
 				 "Now Playing"
@@ -362,7 +360,7 @@
 	     (if logged-in
 	       (html
 		"Welcome, " 
-		[:a {:href (str "/users/" (:username user))} (:username user)]
+		[:a.userlink {:href (str "/users/" (:username user))} (:username user)]
 		". "
 		[:a {:href "/logout"} "Logout"])
 	       [:a {:href lastfm-auth-url} "Login to Last.fm"]))]

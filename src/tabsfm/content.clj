@@ -51,7 +51,7 @@
 				  (:username lastfm-user))
 		       op  (if username
 			     (list (tracks-to-ol s p (get-recent-tracks username))
-				   [:div.viewmore [:a {:href (str "/users/" username "/recent")} "View More"]])
+				   [:div.viewmore [:a.next {:href (str "/users/" username "/recent")} "View More"]])
 			     [:span "Log in and Register for this sweetness."])
 		       ]
 		   op))	   
@@ -255,27 +255,29 @@
    "users"     (struct-map section
 		       :title "Users"
 		       :body (fn [s p]
-			       (tabbed-section s p 
-					       (list 
-						(struct section
-							"Profile"
-							"profile")
-						(struct section
-							"Library"
-							"library")
-						(struct section
-							"Charts"
-							"charts")
-						(struct section
-							"Friends"
-							"friends")
-						(struct section
-							"Tracks"
-							"tracks"))
-					       ((var sections) "users")))
+			       (let [userpage (p "userpage")]
+				 (tabbed-section s p 
+						 (list 
+						  (struct section
+							  "Profile"
+							  "profile")
+						  (struct section
+							  "Tracks"
+							  "recent")
+						 (struct section
+							  "Library"
+							  "library")
+						  (struct section
+							  "Charts"
+							  "charts")
+						  (struct section
+							  "Friends"
+							  "friends"))
+						 ((var sections) "users"))))
 		       :subsections 
 		       {"profile" (struct-map section
 				    :title "Profile"
+				    :long-title "user's Profile" 
 				    :body (fn [s p]
 					    "user profile"))
 			"library" (struct-map section
@@ -290,10 +292,15 @@
 				    :title "Friends"
 				    :body (fn [s p]
 					    "user friends"))
-			"tracks" (struct-map section
+			"recent" (struct-map section
 				   :title "Tracks"
 				   :body (fn [s p]
-					   "user tracks"))})
+					   (list
+					    (tracks-to-ol s p
+							  (get-recent-tracks (p "userpage") 25))
+					    [:div.viewmore
+					     [:a.prev {:href "prev"} "Previous 25"]
+					     [:a.next {:href "next"} "Next 25"]])))})
 					       ;; check if user is in DS
    "user-agreement"      (struct section
 				 "User Agreement"
