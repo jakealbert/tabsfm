@@ -252,7 +252,41 @@
 			(centered-section
 			 "Your Last.fm session has been discarded"
 			 [:p "&#8220;later dude.&#8221;"])))
-   "users"     (struct-map section
+   "artist"     (struct-map section
+		       :title "Artist"
+		       :body (fn [s p]
+			       (let [artist (p "artist")]
+				 (tabbed-section s p 
+						 (list 
+						  (struct section
+							  "Overview"
+							  "overview")
+						  (struct section
+							  "Guitar"
+							  "guitar")
+						  (struct section
+							  "Bass"
+							  "bass")
+						  (struct section
+							  "Chords"
+							  "chords"))
+						  ((var sections) "artist"))))
+		       :subsections 
+		       {"overview" (struct-map section
+				    :title "Overview"
+				    :long-title "Artist's Overview" 
+				    :body (fn [s p]
+					    "artist overview"))
+			"library" (struct-map section
+				    :title "Library"
+				    :body (fn [s p]
+					    "user library"))
+			"charts" (struct-map section
+				   :title "Charts"
+				   :body (fn [s p]
+					   "user charts"))})
+  
+ "users"     (struct-map section
 		       :title "Users"
 		       :body (fn [s p]
 			       (let [userpage (p "userpage")]
@@ -277,23 +311,23 @@
 		       :subsections 
 		       {"profile" (struct-map section
 				    :title "Profile"
-				    :long-title "user's Profile" 
+				    :long-title (fn [s p] (str (p "userpage") "'s Profile"))
 				    :body (fn [s p]
 					    "user profile"))
 			"library" (struct-map section
-				    :title "Library"
+				    :title (fn [s p] (str (p "userpage") "'s Library"))
 				    :body (fn [s p]
 					    "user library"))
 			"charts" (struct-map section
-				   :title "Charts"
+				   :title (fn [s p] (str (p "userpage") "'s Charts"))
 				   :body (fn [s p]
 					   "user charts"))
 			"friends" (struct-map section
-				    :title "Friends"
+				    :title (fn [s p] (str (p "userpage") "'s Friends"))
 				    :body (fn [s p]
 					    "user friends"))
 			"recent" (struct-map section
-				   :title "Tracks"
+				   :title (fn [s p] (str (p "userpage") "'s Tracks"))
 				   :body (fn [s p]
 					   (list
 					    (tracks-to-ol s p

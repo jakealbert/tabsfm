@@ -1,5 +1,6 @@
 (ns tabsfm.lastfm
   (:use compojure.core)
+  (:require [clojure.contrib.str-utils2 :as s2])
   (:use [clojure-http.client])
   (:import (java.io Reader InputStream InputStreamReader ByteArrayInputStream IOException))
   (:import (java.security NoSuchAlgorithmException MessageDigest)
@@ -58,7 +59,12 @@
        album-mbid  (first (for [y track
 				:when (= (:tag y) :album)]
 			   (:mbid (:attrs y))))
-       track-map (assoc track-map :album-mbid album-mbid)]
+       track-map (assoc track-map :album-mbid album-mbid)
+       track-url (:url track-map)
+       track-url (s2/split track-url #"/_/")
+       name-url (second track-url)
+       artist-url (second (s2/split (first track-url) #"/music/"))
+       track-map (assoc track-map :url-name name-url :url-artist artist-url)]
     track-map))
 		     
 
@@ -94,13 +100,14 @@
 
 
 (defn get-recent-tracks
-  [username]
-  (for [track-tag (:content
-		   (first 
-		    (:content 
-		     (first 
-		      (xml-seq (user_get-recent-tracks username 5))))))]
-    (track-tag-to-map track-tag)))
+  ([username] (get-recent-tracks username 5))
+  ([username num]
+     (for [track-tag (:content
+		      (first 
+		       (:content 
+			(first 
+			 (xml-seq (user_get-recent-tracks username num))))))]
+       (track-tag-to-map track-tag))))
        	 
 
 (defn album_get-info-by-mbid

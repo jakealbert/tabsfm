@@ -75,6 +75,11 @@
 (defroutes public-routes
   (GET "/" {session :session params :params}
        (index session (assoc params "page" "tabs")))
+  
+  (GET "/artist/:artist/:subpage" {session :session params :params}
+       (index session (assoc params "page" "artist")))
+  (GET "/artist/:artist" {session :session params :params}
+       (index session (assoc params "page" "artist")))
   (GET "/users/:userpage/:subpage" {session :session params :params}
        (index session (assoc params "page" "users")))
   (GET "/users/:userpage" {session :session params :params}
