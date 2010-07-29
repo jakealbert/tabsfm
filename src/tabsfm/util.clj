@@ -57,7 +57,7 @@
 	(or
 	 (nil? subsection)
 	 (and (nil? subpage) 
-	      (= page "charts")
+	      
 	      (subsection "overview"))
 	      
 	       

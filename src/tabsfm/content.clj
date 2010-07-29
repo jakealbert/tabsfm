@@ -95,6 +95,13 @@
 	:position {"overview" :right
 		   "loved" :left})
       (struct-map section
+	:title "Artist Tracks"
+	:body (fn [s p] [:ul ])
+	:section "artist"
+	:subsection #{"overview" "versions"}
+	:position {"overview" :right
+		   "versions" :left})
+      (struct-map section
 	:title "Debug"
 	:body (fn [session params]
 		(html
@@ -262,6 +269,9 @@
 							  "Overview"
 							  "overview")
 						  (struct section
+							  "All"
+							  "versions")
+						  (struct section
 							  "Guitar"
 							  "guitar")
 						  (struct section
@@ -274,18 +284,34 @@
 		       :subsections 
 		       {"overview" (struct-map section
 				    :title "Overview"
-				    :long-title "Artist's Overview" 
+				    :long-title (fn [s p] (str (p "artist"))) 
 				    :body (fn [s p]
-					    "artist overview"))
-			"library" (struct-map section
-				    :title "Library"
+					 (widget-subsection s p widgets)))
+			"versions" (struct-map section
+				    :title "Versions"
+				    :long-title (fn [s p] (str (p "artist") " Tabs"))
 				    :body (fn [s p]
-					    "user library"))
+					 (widget-subsection s p widgets)))
+			"guitar" (struct-map section
+				    :title "Guitar"
+				    :long-title (fn [s p] (str (p "artist") " Guitar Tabs"))
+				    :body (fn [s p]
+					    (widget-subsection s p widgets)))
+			"bass" (struct-map section
+				 :title "Bass"
+				 :long-title (fn [s p] (str (p "artist") " Bass Tabs"))
+				 :body (fn [s p]
+					 (widget-subsection s p widgets)))
+			"chords" (struct-map section
+				   :title "Chords"
+				   :long-title (fn [s p] (str (p "artist") " Chords"))
+				   :body (fn [s p]
+					   (widget-subsection s p widgets)))
 			"charts" (struct-map section
 				   :title "Charts"
-				   :body (fn [s p]
-					   "user charts"))})
-  
+				  	    :body (fn [s p]
+					 (widget-subsection s p widgets)))})
+		   
  "users"     (struct-map section
 		       :title "Users"
 		       :body (fn [s p]

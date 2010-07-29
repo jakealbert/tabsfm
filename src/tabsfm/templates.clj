@@ -269,29 +269,7 @@
 					    (for [link links]
 					      [:li.icon [:a {:href (:url link)
 							     :class (:link link)}
-							 (:title link)]])))}
-		      {:title "Share"
-		       :link "share"
-		       :content (fn [s p] (let [links (list 
-						       {:title "Jam Feed"
-							:url "http://tabs.fm"
-							:link "jamfeed"}
-						       {:title "Facebook"
-							:url "http://facebook.com"
-							:link "facebook"}
-						       {:title "Twitter"
-							:url "http://twitter.com"
-							:link "twitter"}
-						       {:title "Last.fm"
-							:url "http://last.fm"
-							:link "lastfm"}
-						       )]
-					    [:ul
-					     (for [link links]
-					       [:li.icon [:a {:href (:url link)
-							 :class (:link link)}
-							  (:title link)]])]))})
-					       
+							 (:title link)]])))})			       
 	album-info  (if (or (nil? (:album-mbid track))
 			    (= "" (:album-mbid track)))
 		      nil
