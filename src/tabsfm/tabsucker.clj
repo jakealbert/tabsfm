@@ -3,7 +3,32 @@
   (:require [clojure.contrib.str-utils2 :as s2])
   (:require [clojure-http.resourcefully :as res]))
 
+(defn get-tabs-by-link
+  [link]
+  link)
  
+(defn get-tabs-by-track
+  ([artist name] (get-tabs-by-track artist name :versions))
+  ([artist name type]
+     (let [link-cond (cond
+			(= type :versions) ""
+			(= type :guitar) "guitar"
+			(= type :bass) "bass"
+			(= type :piano) "piano"
+			(= type :power) "power"
+			(= type :pro) "guitar_pro")
+	   link-append (if (= link-cond "")
+			 "_tab.htm"
+			 (str  "_" link-cond "_tab.html"))
+	   link-prepend (if (= link-cond "")
+			  ""
+			  (str "/" link-cond "_tabs"))
+	   link-artist (s2/replace (s2/lower-case artist) #" " "_")
+	   link-firstlet (s2/take link-artist 1)
+	   link-name (s2/replace (s2/lower-case name) #" " "_")]
+       (get-tabs-by-link (str "/tabs/" link-firstlet "/" link-artist
+			      link-prepend "/" link-name link-append)))))
+
 (defn get-tabs-by-artist
   [artist]
   (let [artist-911tabs-url (s2/lower-case (s2/replace artist #" " "_"))
