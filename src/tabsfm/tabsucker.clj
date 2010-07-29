@@ -3,9 +3,75 @@
   (:require [clojure.contrib.str-utils2 :as s2])
   (:require [clojure-http.resourcefully :as res]))
 
+(defn get-url-from-911link
+   [link]
+   (letfn [(response-process [response]
+			     (if (nil? response)
+			       nil
+			       (let [bodyseq (:body-seq response)
+				     bodystr (apply str bodyseq)
+				     [bodystr tablink] (re-find #".*<iframe src=\"(.*)\" id=\"LinkFrame\".*" bodystr)]
+				 tablink)))
+	   (response []
+		    (let [response-try (try
+					(res/get (str "http://www.911tabs.com" link))
+					(catch IOException e
+					  nil))
+			  processed (response-process response-try)]
+		      processed))]
+    (response)))
+				     
+				     
+
 (defn get-tabs-by-link
   [link]
-  link)
+  (letfn [(response-process [response]
+			    (if (nil? response)
+			      nil
+			      (let [bodyseq (:body-seq response)
+				    bodystr (apply str bodyseq)
+				    splitone (s2/split bodystr #"video lessons")
+				    splittwo (s2/split (nth splitone 2) #"<td colspan=2 height=80 align=center>")
+				    splittr (s2/split (first splittwo) #"(<tr class=tr>)|(<tr class=\"tr1\">)")
+				    splittr (drop 1 (drop-last 0 splittr))]
+				(map (fn [tr]
+				       (let [tds (first (s2/split tr #"</tr>"))
+					     tds (s2/replace tds #"\t" "")
+					     [tds title part rating type] (re-find #"<td class=small>.*</td><td>(.*)</td><td align=center class=small>(.*)</td><td align=center class=smallg>(.*)</td><td align=center class=small>(.*)</td>" tds)
+					     type-cond (cond
+							(= type "guitar tab") :guitar
+							(= type "chords") :chords
+							(= type "bass tab") :bass
+							(= type "drum tab") :drum
+							(= type "power tab") :power
+							(= type "guitar pro tab") :pro
+							(= type "piano tab") :piano
+							:else type)
+					     part-cond (cond
+							(= part "intro") :intro
+							(= part "solo") :solo
+							(= part "") nil
+							:else part)
+					     rating (Double/parseDouble rating)
+					     [title-anchor title-link title-name] (re-find
+										 #"<a href=\"(.*)\" rel=\"nofollow\">(.*)</a>"
+										 title)
+					     newmap {:title title-name
+						     :911link title-link
+						     :part part
+						     :rating rating
+						     :type type-cond}]
+					 newmap))
+				     splittr))))
+	  (response []
+		    (let [response-try (try
+					(res/get (str "http://www.911tabs.com/" link))
+					(catch IOException e
+					  nil))
+			  processed (response-process response-try)]
+		      processed))]
+    (response)))
+
  
 (defn get-tabs-by-track
   ([artist name] (get-tabs-by-track artist name :versions))
