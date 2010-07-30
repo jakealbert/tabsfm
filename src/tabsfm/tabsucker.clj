@@ -85,7 +85,9 @@
 							(= part "solo") :solo
 							(= part "") nil
 							:else part)
-					     rating (Double/parseDouble rating)
+					     rating (if (= rating "")
+						      nil
+						      (Double/parseDouble rating))
 					     [title-anchor title-link title-name] (re-find
 										 #"<a href=\"(.*)\" rel=\"nofollow\">(.*)</a>"
 										 title)
@@ -106,6 +108,7 @@
     (response)))
 
  
+
 (defn get-tabs-by-track
   ([artist name] (get-tabs-by-track artist name :versions))
   ([artist name type]
@@ -130,7 +133,7 @@
 
 (defn get-tabs-by-artist
   [artist]
-  (let [artist-911tabs-url (s2/lower-case (s2/replace artist #" " "_"))
+  (let [artist-911tabs-url (s2/lower-case (s2/replace (s2/replace artist #" " "_") #"\+" "_"))
 	first-letter (s2/lower-case (s2/take artist 1))]
     (letfn [(response-process [response]
 				(if (nil? response)

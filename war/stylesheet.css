@@ -252,6 +252,10 @@ ol.tracklist, ul.tracklist {
     margin: 0;
     padding: 0;
 }
+ol.tablist, ul.tablist {
+    margin: 0;
+    padding: 0;
+}
 .tracklist div.album-art {
     float: left;
     width: 64px;
@@ -273,15 +277,27 @@ ol.tracklist, ul.tracklist {
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
     margin-top: -1px;
-    position: relative;
 }
-.tracklist li.track:nth-child(odd) {
+.tablist li.track {
+    clear: both;
+    position: relative;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin-top: -1px;
+}
+.tracklist li.track:nth-child(odd),
+.tablist li.track:nth-child(odd) {
     background: rgba(255,255,255,0.6);
 }
-.tracklist li.track:nth-child(even) {
+.tracklist li.track:nth-child(even),
+.tablist li.track:nth-child(even) {
     background: rgba(255,255,255,0.3);
 }
-.tracklist li.track h4 {
+.tracklist li.track h4,
+.tablist li.track h4 {
     margin: 0;
     padding: 0;
     font-size: 1.4em;
@@ -294,6 +310,26 @@ ol.tracklist, ul.tracklist {
 
 div.track-actions a {
     display: inline-block;
+    background-color: #b23243;
+    margin-right: 0.5em;
+    margin-bottom: 7px;
+    padding: 5px 10px 6px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    line-height: 1;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    position: relative;
+    cursor: pointer;
+}
+
+div.tab-actions a {
+   display: inline-block;
     background-color: #b23243;
     margin-right: 0.5em;
     margin-bottom: 7px;

@@ -96,10 +96,11 @@
 	:position {"overview" :right
 		   "loved" :left})
       (struct-map section
-	:title "Artist Tracks"
+	:title {"overview" "Tracks"
+		"versions" nil}
 	:body (fn [s p]
-		(list (tabs-to-ol
-		       (get-tabs-by-artist (p "artist"))))
+		(tabs-to-ol s p
+		       (get-tabs-by-artist (p "artist")))
 		
 		)
 	:section "artist"

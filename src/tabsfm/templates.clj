@@ -150,7 +150,24 @@
   [session params widgets]
   (html
    [:div.widgetsubsection.span-11.append-1.colborder
-    (map (fn [widget] (html [:div.box.subsection [:h3 (:title widget)] ((:body widget) session params)]))
+    (map (fn [widget]
+	   (let 
+	       [widget-title (:title widget)
+		widget-title (if (map? widget-title)
+			       (widget-title (params "subpage"))
+			       widget-title)
+		widget-title (cond
+			      (nil? widget-title) nil
+			      (= widget-title "") nil
+			      (string? widget-title) [:h3 widget-title]
+			      :else nil)
+		bodyout (if (nil? widget-title)
+			  [:div.box.subsection
+			   ((:body widget) session params)]
+			  [:div.box.subsection
+			   widget-title
+			   ((:body widget) session params)])]
+	     bodyout))
 	 (filter (fn [widget] (and (not
 				    (or 
 				     (and (keyword? (:position widget))
@@ -164,7 +181,24 @@
 				   (authorized-for? session widget)))
 		 widgets))]
    [:div.widgetsubsection.span-6.last
-    (map (fn [widget] (html [:div.box.subsection [:h3 (:title widget)] ((:body widget) session params)]))
+    (map (fn [widget] 
+	   (let
+	       [widget-title (:title widget)
+		widget-title (if (map? widget-title)
+			       (widget-title (params "subpage"))
+			       widget-title)
+		widget-title (cond 
+			      (nil? widget-title) nil
+			      (= widget-title "") nil
+			      (string? widget-title) [:h3 widget-title]
+			      :else nil)
+		bodyout (if (nil? widget-title)
+			  [:div.box.subsection
+			   ((:body widget) session params)]
+			  [:div.box.subsection
+			   widget-title
+			   ((:body widget) session params)])]
+	     bodyout))
 	 (filter (fn [widget] (and (or
 				    (and (keyword? (:position widget))
 					 (= (:position widget) :right))
@@ -188,7 +222,7 @@
 	     page-url (if (= page "tabs")
 			"/"
 			(cond (params "userpage") (str "/" page "/" (params "userpage") "/")
-			      (params "artist") (str "/" page "/" (params "artist") "/")
+			      (params "artist") (str "/" page "/" (s2/replace (params "artist") #" " "+") "/")
 			      :else (str "/" page "/")))
 	     subpage   (params "subpage")
 	     subpage   (if (nil? subpage)
@@ -325,75 +359,46 @@
 
 (defn tab-to-list-item
   [s p tab]
-  (let [actions (list {:title "Songbooks"
-		       :link "songbooks"
-		       :content (fn [s p] (let [links (list
-						       {:title "View in Songbook"
-							:url "view"
-							:link "view"}
-						       {:title "Add to Songbook"
-							:url "add"
-							:link "add"}
-						       {:title "Remove from Songbook"
-							:url "remove"
-							:link "remove"})]
-					    (for [link links]
-					      [:li.icon [:a {:href (:url link)
-							     :class (:link link)}
-							 (:title link)]])))}
-		      {:title "Versions"
-		       :link "versions"
-		       :content (fn [s p] (let [links (list
-						       {:title "Guitar Tabs"
-							:url "guitar"
-							:link "guitar"}
-						       {:title "Bass Tabs"
-							:url "bass"
-							:link "bass"}
-						       {:title "Chords"
-							:url "chords"
-							:link "chords"}
-						       '{:title "All"
-							:url "all"
-							:link "all"})]
-					    (for [link links]
-					      [:li.icon [:a {:href (:url link)
-							     :class (:link link)}
-							 (:title link)]])))})			       
-	album-info  (if (or (nil? (:album-mbid track))
-			    (= "" (:album-mbid track)))
-		      nil
-		      (album_get-info-by-mbid (:album-mbid track)))
-	album-art-url (if (nil? album-info)
-			nil
-			(get-album-image-url album-info))
-	album-art-url (if (or (nil? album-art-url)
-			      (= "" album-art-url))
-			"/images/no-art.png"
-			album-art-url)
-	album-art  [:img {:src album-art-url :alt (str (:artist track) " - " (:name track)) :width "64px" :height "64px"}]
-	track-body [:div
-		    [:div.album-art
-		     [:a {:href (str "/artist/" (:url-artist track) "/" (:url-name track))} album-art]]
+  (let [actions (filter (fn [x] (tab x)) (list :guitar :bass :piano :drum :power :pro))
+	actions (map (fn [action] 
+		       (cond 
+			(= action :guitar) {:title "Guitar"
+					    :link "guitar"
+					    :count (:count (tab action))}
+		        (= action :bass) {:title "Bass"
+					  :link "bass"
+					  :count (:count (tab action))}
+			(= action :piano) {:title "Piano"
+					    :link "piano"
+					    :count (:count (tab action))}
+			(= action :drum)  {:title "Drum"
+					    :link "drum"
+					    :count (:count (tab action))}
+			(= action :power)  {:title "Power"
+					    :link "power"
+					    :count (:count (tab action))}
+			(= action :pro)  {:title "Pro"
+					    :link "pro"
+					    :count (:count (tab action))}))
+		     actions)
+				
+	track-body [:li.track
 		    [:h4
-		     [:a {:href (str "/artist/" (:url-artist track))}
-		      (:artist track)]
-		     " - "
-		     [:a {:href (str "/artist/" (:url-artist track) "/" (:url-name track))}
-		      (:name track)]]
-		    [:div.date (if (nil? (:date track))
-				 "Now Playing"
-				 (dt-time-ago (lastfm-date-to-dt (:date track))))]
-		    [:div.track-actions
-		     [:a {:href (str "#" (:link (first actions))) :link (:link (first actions))} (:title (first actions))]
-		     (for [action (rest actions)]
-		       (html [:a {:href (str "#" (:link action)) :link (:link action)} (:title action)]))]
-		    [:div.action-expand
+		     [:a {:href (str "/artist/" (s2/replace (p "artist") #" " "+")  "/versions/" (s2/replace (:title tab) #" " "+"))} (:title tab)]]
+		    (if (not (= (p "subpage") "overview"))
+		      [:div.tab-actions
 		     (for [action actions]
-		       [:div {:class (:link action)} ((:content action) s p)])]]]
-    (if (true? (:now-playing track))
-      [:li.track.now-playing track-body]
-      [:li.track track-body])))
+		       (html [:a {:href (str "/artist/"
+				     (s2/replace (p "artist") #" " "+")
+				     "/"
+				     (:link action)
+				     "/"
+				     (s2/replace (:title tab) #" " "+"))}
+			      (str (:title action)
+				   " ("
+				   (:count action)
+				   ")")]))])]]
+    track-body))
 
 
 
@@ -408,6 +413,7 @@
   [:ul.tablist
    (for [tab tabs]
      (tab-to-list-item s p tab))])
+
 ;;;;;;;;;;;;;;;;;;;
 ;; LAYOUT
 ;;;;;;;;;;;;;;;;;;;
