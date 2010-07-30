@@ -96,17 +96,26 @@
 	:position {"overview" :right
 		   "loved" :left})
       (struct-map section
-	:title {"overview" "Tracks"
-		"versions" nil}
+	:title {"overview" "Tracks"}
 	:body (fn [s p]
-		(tabs-to-ol s p
-		       (get-tabs-by-artist (p "artist")))
-		
-		)
+		(tabs-to-ol s p 
+			   (filter
+			    (fn [tab]
+			      (let [tab-type (p "subpage")
+				    tab-type (if (or (nil? tab-type)
+						     (= "" tab-type)
+						     (= "overview" tab-type))
+					       :versions
+					       (keyword tab-type))]
+			      (tab tab-type)))
+			    (sort-by :title (get-tabs-by-artist (p "artist"))))))
 	:section "artist"
-	:subsection #{"overview" "versions"}
-	:position {"overview" :right
-		   "versions" :left})
+	:subsection #{"overview" "versions" "guitar" "bass" "drum" "piano" "power" "pro"}
+	:position (fn [x] (if (or (= x "overview")
+				  (= x "")
+				  (nil? x))
+			    :right
+			    :left)))
       (struct-map section
 	:title "Debug"
 	:body (fn [session params]
@@ -275,17 +284,29 @@
 							  "Overview"
 							  "overview")
 						  (struct section
-							  "All"
+							  "Albums"
+							  "albums")
+						  (struct section
+							  "All Tabs"
 							  "versions")
 						  (struct section
-							  "Guitar"
+							  "Guitar Tabs"
 							  "guitar")
 						  (struct section
-							  "Bass"
+							  "Bass Tabs"
 							  "bass")
 						  (struct section
-							  "Chords"
-							  "chords"))
+							  "Drum Tabs"
+							  "drum")
+						  (struct section
+							  "Piano Tabs"
+							  "piano")
+						  (struct section
+							  "Power Tabs"
+							  "power")
+						  (struct section
+							  "Guitar Pro Tabs"
+							  "pro"))
 						  ((var sections) "artist"))))
 		       :subsections 
 		       {"overview" (struct-map section
@@ -299,20 +320,36 @@
 				    :body (fn [s p]
 					 (widget-subsection s p widgets)))
 			"guitar" (struct-map section
-				    :title "Guitar"
+				    :title "Guitar Tabs"
 				    :long-title (fn [s p] (str (p "artist") " Guitar Tabs"))
 				    :body (fn [s p]
 					    (widget-subsection s p widgets)))
 			"bass" (struct-map section
-				 :title "Bass"
+				 :title "Bass Tabs"
 				 :long-title (fn [s p] (str (p "artist") " Bass Tabs"))
 				 :body (fn [s p]
 					 (widget-subsection s p widgets)))
-			"chords" (struct-map section
-				   :title "Chords"
-				   :long-title (fn [s p] (str (p "artist") " Chords"))
+			"drum" (struct-map section
+				   :title "Drum Tabs"
+				   :long-title (fn [s p] (str (p "artist") " Drum Tabs"))
 				   :body (fn [s p]
 					   (widget-subsection s p widgets)))
+			"piano" (struct-map section
+				   :title "Piano Tabs"
+				   :long-title (fn [s p] (str (p "artist") " Piano Tabs"))
+				   :body (fn [s p]
+					   (widget-subsection s p widgets)))
+			"power" (struct-map section
+				   :title "Power Tabs"
+				   :long-title (fn [s p] (str (p "artist") " Power Tabs"))
+				   :body (fn [s p]
+					   (widget-subsection s p widgets)))
+			"pro" (struct-map section
+				   :title "Guitar Pro Tabs"
+				   :long-title (fn [s p] (str (p "artist") " Guitar Pro Tabs"))
+				   :body (fn [s p]
+					   (widget-subsection s p widgets)))
+			
 			"charts" (struct-map section
 				   :title "Charts"
 				  	    :body (fn [s p]

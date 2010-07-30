@@ -173,7 +173,10 @@
 				     (and (keyword? (:position widget))
 					  (= (:position widget) :right))
 				     (and (map? (:position widget))
-					  (= (get (:position widget) (params "subpage") (val (first (:position widget)))) :right))))
+					  (= (get (:position widget) (params "subpage") (val (first (:position widget)))) :right))
+				     (and (fn? (:position widget))
+					  (= ((:position widget) (params "subpage"))
+					     :right))))
 				   (in-section-for? (params "page")
 						    (params "subpage")
 						    (:section widget)
@@ -185,7 +188,7 @@
 	   (let
 	       [widget-title (:title widget)
 		widget-title (if (map? widget-title)
-			       (widget-title (params "subpage"))
+			       (get widget-title (params"subpage") (val (first (:title widget))))
 			       widget-title)
 		widget-title (cond 
 			      (nil? widget-title) nil
@@ -203,7 +206,9 @@
 				    (and (keyword? (:position widget))
 					 (= (:position widget) :right))
 				    (and (map? (:position widget))
-					 (= (get (:position widget) (params "subpage") (val (first (:position widget)))) :right)))
+					 (= (get (:position widget) (params "subpage") (val (first (:position widget)))) :right))
+				    (and (fn? (:position widget))
+					 (= ((:position widget) (params "subpage")) :right)))
 				   (in-section-for? (params "page")
 						    (params "subpage")
 						    (:section widget)
@@ -384,8 +389,14 @@
 				
 	track-body [:li.track
 		    [:h4
-		     [:a {:href (str "/artist/" (s2/replace (p "artist") #" " "+")  "/versions/" (s2/replace (:title tab) #" " "+"))} (:title tab)]]
-		    (if (not (= (p "subpage") "overview"))
+		     (if (or (= (p "subpage") "versions")
+			     (= (p "subpage") "overview")
+			     (= (p "subpage") "")
+			     (nil? (p "subpage")))
+		       [:a {:href (str "/artist/" (s2/replace (p "artist") #" " "+")  "/versions/" (s2/replace (:title tab) #" " "+"))} (:title tab)]
+		       [:a {:href (str "/artist/" (s2/replace (p "artist") #" " "+")  "/" (p "subpage") "/" (s2/replace (:title tab) #" " "+"))} (str (:title tab) " (" (:count (tab (keyword (p "subpage")))) ")")])]
+		     
+		    (if (= (p "subpage") "versions")
 		      [:div.tab-actions
 		     (for [action actions]
 		       (html [:a {:href (str "/artist/"
