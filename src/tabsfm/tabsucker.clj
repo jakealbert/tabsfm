@@ -3,6 +3,39 @@
   (:require [clojure.contrib.str-utils2 :as s2])
   (:require [clojure-http.resourcefully :as res]))
 
+
+
+(defn get-pre-from-url
+   [url]
+   (letfn [(response-process [response]
+			     (if (nil? response)
+			       nil
+			       (let [bodyseq (:body-seq response)
+				     bodystr (apply str bodyseq)
+				     [bodystr prebody] (re-find #".*<pre(.*)</pre>.*" bodystr)
+				     [presplit pre] (s2/split prebody #">" 2)
+				     pre (if (or (s2/contains? pre "<br>")
+						 (s2/contains? pre "<br />")
+						 (s2/contains? pre "<br/>")
+						 (s2/contains? pre "<BR>")
+						 (s2/contains? pre "<BR />")
+						 (s2/contains? pre "<BR/>"))
+					   (s2/split pre #"(<br>)|(<br />)|(<br/>)|(<BR>)|(<BR/>)|(BR />)")
+					   pre)]
+						 
+				 
+				     pre)))
+	   (response []
+		    (let [response-try (try
+					(res/get url)
+					(catch IOException e
+					  nil))
+			  processed (response-process response-try)]
+		      processed))]
+    (response)))
+
+
+
 (defn get-url-from-911link
    [link]
    (letfn [(response-process [response]

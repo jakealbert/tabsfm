@@ -2,6 +2,7 @@
   (:use [tabsfm.lastfm]
 	[tabsfm.templates]
 	[tabsfm.util]
+	[tabsfm.tabsucker]
 	[clj-time.core]
 	[clj-time.format]
 	[hiccup :only [html]]))
@@ -96,7 +97,11 @@
 		   "loved" :left})
       (struct-map section
 	:title "Artist Tracks"
-	:body (fn [s p] [:ul ])
+	:body (fn [s p]
+		(list (tabs-to-ol
+		       (get-tabs-by-artist (p "artist"))))
+		
+		)
 	:section "artist"
 	:subsection #{"overview" "versions"}
 	:position {"overview" :right

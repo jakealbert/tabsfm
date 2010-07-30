@@ -319,6 +319,96 @@
 
 
 ;;;;;;;;;;;;;;;;;;;
+;; TABLISTING
+;;;;;;;;;;;;;;;;;;;
+
+
+(defn tab-to-list-item
+  [s p tab]
+  (let [actions (list {:title "Songbooks"
+		       :link "songbooks"
+		       :content (fn [s p] (let [links (list
+						       {:title "View in Songbook"
+							:url "view"
+							:link "view"}
+						       {:title "Add to Songbook"
+							:url "add"
+							:link "add"}
+						       {:title "Remove from Songbook"
+							:url "remove"
+							:link "remove"})]
+					    (for [link links]
+					      [:li.icon [:a {:href (:url link)
+							     :class (:link link)}
+							 (:title link)]])))}
+		      {:title "Versions"
+		       :link "versions"
+		       :content (fn [s p] (let [links (list
+						       {:title "Guitar Tabs"
+							:url "guitar"
+							:link "guitar"}
+						       {:title "Bass Tabs"
+							:url "bass"
+							:link "bass"}
+						       {:title "Chords"
+							:url "chords"
+							:link "chords"}
+						       '{:title "All"
+							:url "all"
+							:link "all"})]
+					    (for [link links]
+					      [:li.icon [:a {:href (:url link)
+							     :class (:link link)}
+							 (:title link)]])))})			       
+	album-info  (if (or (nil? (:album-mbid track))
+			    (= "" (:album-mbid track)))
+		      nil
+		      (album_get-info-by-mbid (:album-mbid track)))
+	album-art-url (if (nil? album-info)
+			nil
+			(get-album-image-url album-info))
+	album-art-url (if (or (nil? album-art-url)
+			      (= "" album-art-url))
+			"/images/no-art.png"
+			album-art-url)
+	album-art  [:img {:src album-art-url :alt (str (:artist track) " - " (:name track)) :width "64px" :height "64px"}]
+	track-body [:div
+		    [:div.album-art
+		     [:a {:href (str "/artist/" (:url-artist track) "/" (:url-name track))} album-art]]
+		    [:h4
+		     [:a {:href (str "/artist/" (:url-artist track))}
+		      (:artist track)]
+		     " - "
+		     [:a {:href (str "/artist/" (:url-artist track) "/" (:url-name track))}
+		      (:name track)]]
+		    [:div.date (if (nil? (:date track))
+				 "Now Playing"
+				 (dt-time-ago (lastfm-date-to-dt (:date track))))]
+		    [:div.track-actions
+		     [:a {:href (str "#" (:link (first actions))) :link (:link (first actions))} (:title (first actions))]
+		     (for [action (rest actions)]
+		       (html [:a {:href (str "#" (:link action)) :link (:link action)} (:title action)]))]
+		    [:div.action-expand
+		     (for [action actions]
+		       [:div {:class (:link action)} ((:content action) s p)])]]]
+    (if (true? (:now-playing track))
+      [:li.track.now-playing track-body]
+      [:li.track track-body])))
+
+
+
+(defn tabs-to-ol
+  [s p tabs]
+  [:ol.tablist
+   (for [tab tabs]
+     (tab-to-list-item s p tab))])
+
+(defn tabs-to-ul
+  [s p tabs]
+  [:ul.tablist
+   (for [tab tabs]
+     (tab-to-list-item s p tab))])
+;;;;;;;;;;;;;;;;;;;
 ;; LAYOUT
 ;;;;;;;;;;;;;;;;;;;
 
