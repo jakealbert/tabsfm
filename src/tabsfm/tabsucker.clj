@@ -70,14 +70,14 @@
 				(map (fn [tr]
 				       (let [tds (first (s2/split tr #"</tr>"))
 					     tds (s2/replace tds #"\t" "")
-					     [tds title part rating type] (re-find #"<td class=small>.*</td><td>(.*)</td><td align=center class=small>(.*)</td><td align=center class=smallg>(.*)</td><td align=center class=small>(.*)</td>" tds)
+					     [tds version-number title part rating type] (re-find #"<td class=small>(.*)\.</td><td>(.*)</td><td align=center class=small>(.*)</td><td align=center class=smallg>(.*)</td><td align=center class=small>(.*)</td>" tds)
 					     type-cond (cond
 							(= type "guitar tab") :guitar
 							(= type "chords") :chords
 							(= type "bass tab") :bass
 							(= type "drum tab") :drum
 							(= type "power tab") :power
-							(= type "guitar pro tab") :pro
+							(= type "guitar pro tab") :guitar_pro
 							(= type "piano tab") :piano
 							:else type)
 					     part-cond (cond
@@ -88,10 +88,12 @@
 					     rating (if (= rating "")
 						      nil
 						      (Double/parseDouble rating))
+					     version-number (Integer/parseInt version-number)
 					     [title-anchor title-link title-name] (re-find
 										 #"<a href=\"(.*)\" rel=\"nofollow\">(.*)</a>"
 										 title)
 					     newmap {:title title-name
+						     :version-number version-number
 						     :911link title-link
 						     :part part
 						     :rating rating
@@ -110,21 +112,17 @@
  
 
 (defn get-tabs-by-track
-  ([artist name] (get-tabs-by-track artist name :versions))
+  ([artist name] (get-tabs-by-track artist name ""))
   ([artist name type]
-     (let [link-cond (cond
-			(= type :versions) ""
-			(= type :guitar) "guitar"
-			(= type :bass) "bass"
-			(= type :piano) "piano"
-			(= type :power) "power"
-			(= type :pro) "guitar_pro")
-	   link-append (if (= link-cond "")
+     (let [link-type (if (= type "versions")
+		       ""
+		       type)
+	   link-append (if (= link-type "")
 			 "_tab.htm"
-			 (str  "_" link-cond "_tab.html"))
-	   link-prepend (if (= link-cond "")
+			 (str  "_" link-type "_tab.html"))
+	   link-prepend (if (= link-type "")
 			  ""
-			  (str "/" link-cond "_tabs"))
+			  (str "/" link-type "_tabs"))
 	   link-artist (s2/replace (s2/lower-case artist) #" " "_")
 	   link-firstlet (s2/take link-artist 1)
 	   link-name (s2/replace (s2/lower-case name) #" " "_")]
@@ -166,7 +164,7 @@
 							 :drum drum
 							 :piano piano
 							 :power power
-							 :pro pro}]
+							 :guitar_pro pro}]
 					     newmap))
 					 splittr))))
 	    (response [n acc]

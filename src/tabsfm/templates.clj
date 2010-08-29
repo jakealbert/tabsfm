@@ -357,6 +357,8 @@
      (track-to-list-item s p track))])
 
 
+
+
 ;;;;;;;;;;;;;;;;;;;
 ;; TABLISTING
 ;;;;;;;;;;;;;;;;;;;
@@ -424,6 +426,68 @@
   [:ul.tablist
    (for [tab tabs]
      (tab-to-list-item s p tab))])
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;
+;; TABVERSIONLISTING
+;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defn tab-version-to-list-item
+  [s p tab]
+  (let [actions (filter (fn [x] (tab x)) (list :guitar :bass :piano :drum :power :pro))
+	actions (map (fn [action] 
+		       (cond 
+			(= action :guitar) {:title "Guitar"
+					    :link "guitar"
+					    :count (:count (tab action))}
+		        (= action :bass) {:title "Bass"
+					  :link "bass"
+					  :count (:count (tab action))}
+			(= action :piano) {:title "Piano"
+					    :link "piano"
+					    :count (:count (tab action))}
+			(= action :drum)  {:title "Drum"
+					    :link "drum"
+					    :count (:count (tab action))}
+			(= action :power)  {:title "Power"
+					    :link "power"
+					    :count (:count (tab action))}
+			(= action :pro)  {:title "Pro"
+					    :link "pro"
+					    :count (:count (tab action))}))
+		     actions)
+				
+	track-body [:li.track
+		    [:h4
+		     [:a {:href (str "/artist/" (s2/replace (p "artist") #" " "+")  "/" (p "subpage") "/" (s2/replace (p "track") #" " "+") "/" (:version-number tab))}
+		      (str (:title tab)
+			   (if (:rating tab)
+			     (str " <span class=\"rating\">(" (:rating tab) ")</span>")
+			     ""))]]
+		     
+		    (if (or (= (p "subpage") "versions")
+			    (= (p "subpage") "guitar"))
+		      [:span.versions-type (:type tab)])]]
+    track-body))
+
+
+
+(defn tab-versions-to-ol
+  [s p tabs]
+  [:ol.tablist
+   (for [tab tabs]
+     (tab-version-to-list-item s p tab))])
+
+(defn tab-versions-to-ul
+  [s p tabs]
+  [:ul.tablist
+   (for [tab tabs]
+     (tab-version-to-list-item s p tab))])
+
+
 
 ;;;;;;;;;;;;;;;;;;;
 ;; LAYOUT
